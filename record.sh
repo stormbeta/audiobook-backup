@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-#TODO: try using sysdefault audio device instead
-
-BOOK_SECONDS="$(echo "$1" | perl -pe 's/(\d+):(\d+):(\d+)/\1*3600+\2*60+\3/' | bc)"
-
 SAMPLE_RATE='44100'
+mode="${2:-opus}"
 
-SPEED='1.5'
-BOOK_SECONDS="$(echo "$BOOK_SECONDS / $SPEED" | bc)"
-
-echo "Recording for $BOOK_SECONDS seconds"
-
-#Opus requires floating-point pcm, but the ancient optiplex only does S32_LE?
-timeout "${BOOK_SECONDS}s" \
-    arecord -D hw -f S32_LE -c 2 -r ${SAMPLE_RATE} \
-  | ffmpeg -i - -acodec pcm_f32le -ar ${SAMPLE_RATE} -f wav -loglevel warning - \
-  | opusenc --downmix-mono - "${2:-output.opus}"
+case $mode in
+  flac)
+    arecord -f S24_3LE -c 2 -r ${SAMPLE_RATE} | \
+      flac - -f -o "${1:-output.flac}"
+    ;;
+  opus)
+    arecord -f FLOAT_LE -c 2 -r ${SAMPLE_RATE} | \
+      opusenc --downmix-stereo - "${1:-output.opus}"
+    ;;
+  *)
+    echo "unknown mode ${mode}"
+    exit 2
+esac
