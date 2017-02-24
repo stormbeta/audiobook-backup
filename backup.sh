@@ -6,7 +6,8 @@ OUTPUT_DIR=''
 for BOOK in $@; do
   echo "Book: ${BOOK}"
   BOOK_M4A="$(echo "$(basename "${BOOK}")" | sed -r 's/aax$/m4a/')"
-  BOOK_TITLE="$(ffmpeg -i "${BOOK}" 2>&1 | grep '^    title' | grep -Po '(?<=: ).*' | sed -r 's/ \(Unabridged\)$//')"
+  BOOK_TITLE="$(ffmpeg -i "${BOOK}" 2>&1 | grep '^    title' | grep -Po '(?<=: ).*' \
+    | sed -r 's/ \(Unabridged\)$//' | sed -r 's/:/ -/g')"
   BOOK_AUTHOR="$(ffmpeg -i "${BOOK}" 2>&1 | grep '^    artist ' | grep -oP '(?<=: ).*')"
   OUTPUT_NAME="${BOOK_TITLE} - ${BOOK_AUTHOR}.m4a"
   echo "OUTPUT: ${OUTPUT_DIR}/${OUTPUT_NAME}"
