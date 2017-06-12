@@ -1,0 +1,23 @@
+{
+  "name": "audiobook-backup",
+  "version": "1.0.0",
+  "description": "##Direct rip (requires key)",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stormbeta/audiobook-backup.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "nightmare": "^2.10.0",
+    "nightmare-download-manager": "^0.2.4"
+  }
+}
