@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ACTIVATION_BYTES=''
-OUTPUT_DIR=''
+OUTPUT_DIR='/tmp'
 
 for BOOK in $@; do
   echo "Book: ${BOOK}"
@@ -11,8 +11,17 @@ for BOOK in $@; do
   BOOK_AUTHOR="$(ffmpeg -i "${BOOK}" 2>&1 | grep '^    artist ' | grep -oP '(?<=: ).*')"
   OUTPUT_NAME="${BOOK_TITLE} - ${BOOK_AUTHOR}.m4a"
   echo "OUTPUT: ${OUTPUT_DIR}/${OUTPUT_NAME}"
-  ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy "${OUTPUT_DIR}/${BOOK_M4A}"
-  mv "${OUTPUT_DIR}/${BOOK_M4A}" "${OUTPUT_DIR}/${OUTPUT_NAME}"
+
+  ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" "${BOOK}.png"
+
+  ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy "${OUTPUT_DIR}/output.m4a"
+
+  if command -v AtomicParsley; then
+    AtomicParsley "${OUTPUT_DIR}/output.m4a" --artwork "${BOOK}.png"
+    mv ${OUTPUT_DIR}/output-temp*.m4a "${OUTPUT_DIR}/output.m4a"
+  fi
+
+  #mv "${OUTPUT_DIR}/output.m4a" "${OUTPUT_DIR}/${OUTPUT_NAME}"
   #if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
     #(
       #cd "${OUTPUT_DIR}"
