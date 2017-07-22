@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-if [[ $# -lt 3 ]]; then
-  echo "Not enough args!" 1>&2
-  exit 1
-fi
-
-# TODO: Download metadata automatically. Unfortunately it's not baked into the files downpour gives us
-NAME="$2"
-AUTHOR="$3"
-
 # TODO: These must be manually downloaded 
 ls -q ${1}*.m4b | sed -r "s/^(.*)/file '\1'/g" > input
+FILE1="$(ls -q ${1}*.m4b | head -n 1)"
+
+fields="$(AtomicParsley "${FILE1}" -t | sed -r 's/^Atom "(.*+)" contains: (.*)$/\1=\2/g')"
+
+AUTHOR="$(echo -e "${fields}" | grep 'aART' | sed -r 's/^aART=(.*)$/\1/')"
+NAME="$(echo -e "${fields}" | grep '©alb' | perl -pe 's/^©alb=(.*?)($| \(Unabridged\))/\1/')" 
+ENC="$(echo -e "${fields}" | grep '©enc' | sed -r 's/^©enc=(.*)$/\1/')"
+echo "NAME: ${NAME}"
+echo "AUTHOR: ${AUTHOR}"
 
 # Bizarrely, ffmpeg cannot handle album art, so we have to add it back in ourselves
 # See: https://trac.ffmpeg.org/ticket/2798
