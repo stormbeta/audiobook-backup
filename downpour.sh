@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [[ $# -lt 3 ]]; then
+  echo "Not enough args!" 1>&2
+  exit 1
+fi
+
 # TODO: Download metadata automatically. Unfortunately it's not baked into the files downpour gives us
 NAME="$2"
 AUTHOR="$3"
