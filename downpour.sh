@@ -9,6 +9,7 @@ fields="$(AtomicParsley "${FILE1}" -t | sed -r 's/^Atom "(.*+)" contains: (.*)$/
 AUTHOR="$(echo -e "${fields}" | grep 'aART' | sed -r 's/^aART=(.*)$/\1/')"
 NAME="$(echo -e "${fields}" | grep '©alb' | perl -pe 's/^©alb=(.*?)($| \(Unabridged\))/\1/')" 
 ENC="$(echo -e "${fields}" | grep '©enc' | sed -r 's/^©enc=(.*)$/\1/')"
+PUBLISHER="$(echo -e "${fields}" | grep 'cprt' | sed -r 's/^cprt=(.*)$/\1/')"
 echo "NAME: ${NAME}"
 echo "AUTHOR: ${AUTHOR}"
 
@@ -18,7 +19,12 @@ artwork="$(AtomicParsley $(ls -q ${1}*.m4b | head -n 1) --extractPix | grep -oP 
 
 ffmpeg -f concat -safe 0 -i input -vn -c copy output.m4a
 
-AtomicParsley output.m4a --author "${AUTHOR}" --artwork "${artwork}" --title "${NAME}"
+AtomicParsley output.m4a \
+  --title "${NAME}" \
+  --artist "${AUTHOR}" \
+  --artwork "${artwork}" \
+  --copyright "${PUBLISHER}" \
+  --encodedBy "${ENC}"
 
 OUTPUT_NAME="${NAME} - ${AUTHOR}.m4a"
 OUTPUT_DIR='/tmp'
