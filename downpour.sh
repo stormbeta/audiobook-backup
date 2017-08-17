@@ -30,3 +30,15 @@ OUTPUT_NAME="${NAME} - ${AUTHOR}.m4a"
 OUTPUT_DIR='/tmp'
 mv output-temp*.m4a "/tmp/${OUTPUT_NAME}"
 
+if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
+  (
+    cd "${CWD}"
+    #uses https://github.com/andreafabrizi/Dropbox-Uploader
+    dropbox upload "${OUTPUT_NAME}" "Archive/Audiobooks/${OUTPUT_NAME}" &
+    DROPBOX_PID="$!"
+    echo "DROPBOX_PID: ${DROPBOX_PID}"
+    trap "kill ${DROPBOX_PID}; pkill -f curl.*dropbox" SIGINT SIGTERM
+    #NOTE: Mac only - ensures laptop won't sleep while uploading
+    caffeinate -w "${DROPBOX_PID}"
+  )
+fi
