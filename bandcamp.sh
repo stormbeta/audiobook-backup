@@ -4,12 +4,14 @@
 
 # Only pushes unzipped albums to Dropbox for now
 
+#jjjjjjjjjj
+
 FULLPATH="$(readlink -f "$1")"
 FOLDER="$(basename "${FULLPATH}" | sed -r 's/\.zip//')"
 
-# 7z is incapable of reading files with ä in the name for some reason
+# 7z is incapable of reading some non-ascii filenames
 # Can't use unzip as it chokes on other stuff
-RENAMED="$(echo "$FOLDER" | sed -r 's/ä/a')"
+RENAMED="upload-${RANDOM}"
 
 cp "$FULLPATH" /tmp/
 (
