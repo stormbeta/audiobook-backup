@@ -34,7 +34,7 @@ if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
   (
     cd "${CWD}"
     #uses https://github.com/andreafabrizi/Dropbox-Uploader
-    dropbox upload "${OUTPUT_NAME}" "Archive/Audiobooks/${OUTPUT_NAME}" &
+    dropbox upload "${OUTPUT_DIR}/${OUTPUT_NAME}" "Archive/Audiobooks/${OUTPUT_NAME}" &
     DROPBOX_PID="$!"
     echo "DROPBOX_PID: ${DROPBOX_PID}"
     trap "kill ${DROPBOX_PID}; pkill -f curl.*dropbox" SIGINT SIGTERM
