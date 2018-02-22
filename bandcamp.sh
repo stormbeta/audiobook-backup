@@ -21,7 +21,13 @@ cp "$FULLPATH" /tmp/
   fi
   7z x "${RENAMED}.zip" -o"${FOLDER}"
   for i in "${FOLDER}"/*; do
-    dropbox upload "${i}" "/Archive/Music/${i}"
+    # Use NAS to upload if available
+    if [[ -e '/Volumes/dropbox/Archive' ]]; then
+      mkdir -p "$(dirname "/Volumes/dropbox/Archive/Music/${i}")"
+      cp -r "${i}" "/Volumes/dropbox/Archive/Music/${i}"
+    else
+      echo dropbox upload "${i}" "/Archive/Music/${i}"
+    fi
   done
 )
 

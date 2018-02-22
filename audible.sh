@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 ACTIVATION_BYTES=''
-OUTPUT_DIR='/tmp'
+
+if [[ -e '/Volumes/dropbox' ]]; then
+  OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks'
+else
+  OUTPUT_DIR='/tmp'
+fi
 
 set -eo pipefail
 
