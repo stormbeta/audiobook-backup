@@ -4,9 +4,9 @@
 ls -q ${1}*.m4b | sed -r "s/^(.*)/file '\1'/g" > input
 FILE1="$(ls -q ${1}*.m4b | head -n 1)"
 
-fields="$(AtomicParsley "${FILE1}" -t | sed -r 's/^Atom "(.*+)" contains: (.*)$/\1=\2/g')"
+fields="$(AtomicParsley "${FILE1}" -t | sed -r 's/^.*Atom "(.*+)" contains: (.*)$/\1=\2/g')"
 
-AUTHOR="$(echo -e "${fields}" | grep 'aART' | sed -r 's/^aART=(.*)$/\1/')"
+AUTHOR="$(echo -e "${fields}" | grep '©ART' | sed -r 's/^©ART=(.*)$/\1/')"
 NAME="$(echo -e "${fields}" | grep '©alb' | perl -pe 's/^©alb=(.*?)($| \(Unabridged\))/\1/')"
 ENC="$(echo -e "${fields}" | grep '©enc' | sed -r 's/^©enc=(.*)$/\1/')"
 PUBLISHER="$(echo -e "${fields}" | grep 'cprt' | sed -r 's/^cprt=(.*)$/\1/')"

@@ -28,7 +28,7 @@ for BOOK in $@; do
   ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy "${OUTPUT_DIR}/output.m4a"
 
   if command -v AtomicParsley; then
-    AtomicParsley "${OUTPUT_DIR}/output.m4a" --artwork "${BOOK}.png"
+    AtomicParsley "${OUTPUT_DIR}/output.m4a" --title "$BOOK_TITLE" --artwork "${BOOK}.png"
     mv ${OUTPUT_DIR}/output-temp*.m4a "${OUTPUT_DIR}/output.m4a"
   fi
 
