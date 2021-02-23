@@ -4,6 +4,8 @@ ACTIVATION_BYTES=''
 
 if [[ -e '/Volumes/dropbox' ]]; then
   OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks'
+elif [[ -e '/mnt/dropbox' ]]; then
+  OUTPUT_DIR='/mnt/dropbox/Archive/Audiobooks'
 else
   OUTPUT_DIR='/tmp'
 fi
@@ -44,5 +46,7 @@ for BOOK in $@; do
       #NOTE: Mac only - ensures laptop won't sleep while uploading
       caffeinate -w "${DROPBOX_PID}"
     )
+  else
+    echo "Skipping direct dropbox upload as command not found or not on macOS" 1>&2
   fi
 done

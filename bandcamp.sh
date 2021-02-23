@@ -4,8 +4,6 @@
 
 # Only pushes unzipped albums to Dropbox for now
 
-#jjjjjjjjjj
-
 FULLPATH="$(readlink -f "$1")"
 FOLDER="$(basename "${FULLPATH}" | sed -r 's/\.zip//')"
 
@@ -25,6 +23,9 @@ cp "$FULLPATH" /tmp/
     if [[ -e '/Volumes/dropbox/Archive' ]]; then
       mkdir -p "$(dirname "/Volumes/dropbox/Archive/Music/${i}")"
       cp -r "${i}" "/Volumes/dropbox/Archive/Music/${i}"
+    elif [[ -e '/mnt/dropbox/Archive' ]]; then
+      mkdir -p "$(dirname "/mnt/dropbox/Archive/Music/${i}")"
+      cp -r "${i}" "/mnt/dropbox/Archive/Music/${i}"
     else
       echo dropbox upload "${i}" "/Archive/Music/${i}"
     fi
