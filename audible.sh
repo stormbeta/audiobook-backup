@@ -23,18 +23,21 @@ for BOOK in $@; do
     | sed -r 's/ \(Unabridged\)$//' | sed -r 's/:/ -/g')"
   BOOK_AUTHOR="$(echo "${BOOK_DATA}" | grep '^    artist ' | grep -oP '(?<=: ).*')"
   OUTPUT_NAME="${BOOK_TITLE} - ${BOOK_AUTHOR}.m4a"
-  echo "OUTPUT: ${OUTPUT_DIR}/${OUTPUT_NAME}"
+  echo "OUTPUT: ${TMPDIR}/${OUTPUT_NAME}"
 
   ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" "${BOOK}.png"
 
-  ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy "${OUTPUT_DIR}/output.m4a"
+  ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy "${TMPDIR}/output.m4a"
+
+  du -sh "${TMPDIR}/output.m4a"
 
   if command -v AtomicParsley; then
-    AtomicParsley "${OUTPUT_DIR}/output.m4a" --title "$BOOK_TITLE" --artwork "${BOOK}.png"
-    mv ${OUTPUT_DIR}/output-temp*.m4a "${OUTPUT_DIR}/output.m4a"
+    artwork="${BOOK}.png"
+    AtomicParsley "${TMPDIR}/output.m4a" --title "$BOOK_TITLE" --artwork "$artwork"
+    mv ${TMPDIR}/output-temp*.m4a "${TMPDIR}/output.m4a"
   fi
 
-  mv "${OUTPUT_DIR}/output.m4a" "${OUTPUT_DIR}/${OUTPUT_NAME}"
+  mv "${TMPDIR}/output.m4a" "${OUTPUT_DIR}/${OUTPUT_NAME}"
   if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
     (
       cd "${OUTPUT_DIR}"
