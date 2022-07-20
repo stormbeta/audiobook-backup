@@ -27,8 +27,9 @@ AtomicParsley output.m4a \
   --encodedBy "${ENC}"
 
 OUTPUT_NAME="${NAME} - ${AUTHOR}.m4a"
-OUTPUT_DIR='/tmp'
-mv output-temp*.m4a "/tmp/${OUTPUT_NAME}"
+OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks/'
+rsync --progress -h output-temp*.m4a "${OUTPUT_DIR}/${OUTPUT_NAME}" && \
+  rm output-temp*.m4a
 
 if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
   (

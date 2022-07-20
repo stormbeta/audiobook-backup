@@ -37,7 +37,7 @@ for BOOK in $@; do
     mv ${TMPDIR}/output-temp*.m4a "${TMPDIR}/output.m4a"
   fi
 
-  mv "${TMPDIR}/output.m4a" "${OUTPUT_DIR}/${OUTPUT_NAME}"
+  rsync --progress -h "${TMPDIR}/output.m4a" "${OUTPUT_DIR}/${OUTPUT_NAME}"
   if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
     (
       cd "${OUTPUT_DIR}"
