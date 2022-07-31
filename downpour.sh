@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
-# TODO: These must be manually downloaded
+# Downpour unnecessarily splits up audiobook files, we want to merge them back together so each book is a single file
+# You can download the parts manually, or use browser-downpour-script.js
+# with TamperMonkey in Chrome, then right-click the book from the library page
+
+# Usage: ./downpour.sh path/to/files/book-*
+
+# Requirements:
+# * ffmpeg
+# * AtomicParsley (to preserve book cover)
+
+OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks/'
+
 ls -q ${1}*.m4b | sed -r "s/^(.*)/file '\1'/g" > input
 FILE1="$(ls -q ${1}*.m4b | head -n 1)"
 
@@ -27,25 +38,24 @@ AtomicParsley output.m4a \
   --encodedBy "${ENC}"
 
 OUTPUT_NAME="${NAME} - ${AUTHOR}.m4a"
-OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks/'
 rsync --progress -h output-temp*.m4a "${OUTPUT_DIR}/${OUTPUT_NAME}" && \
   rm output-temp*.m4a
 
-if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
-  (
-    cd "${CWD}"
-    # Use NAS to upload if available
-    if [[ -e '/Volumes/dropbox/Archive' ]]; then
-      cp "${OUTPUT_DIR}/${OUTPUT_NAME}" "/Volumes/dropbox/Archive/Audiobooks/${OUTPUT_NAME}"
-    else
-      # TODO: Prompt for upload
-      #uses https://github.com/andreafabrizi/Dropbox-Uploader
-      dropbox upload "${OUTPUT_DIR}/${OUTPUT_NAME}" "Archive/Audiobooks/${OUTPUT_NAME}" &
-      DROPBOX_PID="$!"
-      echo "DROPBOX_PID: ${DROPBOX_PID}"
-      trap "kill ${DROPBOX_PID}; pkill -f curl.*dropbox" SIGINT SIGTERM
-      #NOTE: Mac only - ensures laptop won't sleep while uploading
-      caffeinate -w "${DROPBOX_PID}"
-    fi
-  )
-fi
+#if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
+  #(
+    #cd "${CWD}"
+    ## Use NAS to upload if available
+    #if [[ -e '/Volumes/dropbox/Archive' ]]; then
+      #cp "${OUTPUT_DIR}/${OUTPUT_NAME}" "/Volumes/dropbox/Archive/Audiobooks/${OUTPUT_NAME}"
+    #else
+      ## TODO: Prompt for upload
+      ##uses https://github.com/andreafabrizi/Dropbox-Uploader
+      #dropbox upload "${OUTPUT_DIR}/${OUTPUT_NAME}" "Archive/Audiobooks/${OUTPUT_NAME}" &
+      #DROPBOX_PID="$!"
+      #echo "DROPBOX_PID: ${DROPBOX_PID}"
+      #trap "kill ${DROPBOX_PID}; pkill -f curl.*dropbox" SIGINT SIGTERM
+      ##NOTE: Mac only - ensures laptop won't sleep while uploading
+      #caffeinate -w "${DROPBOX_PID}"
+    #fi
+  #)
+#fi
