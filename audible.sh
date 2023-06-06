@@ -41,7 +41,7 @@ BOOK_DATA="$(ffmpeg -i "${BOOK}" 2>&1 || true)"
 BOOK_TITLE="$(echo "${BOOK_DATA}" | grep '^    title' | grep -Po '(?<=: ).*' \
   | sed -r 's/ \(Unabridged\)$//' | sed -r 's/:/ -/g')"
 BOOK_AUTHOR="$(echo "${BOOK_DATA}" | grep '^    artist ' | grep -oP '(?<=: ).*')"
-OUTPUT_NAME="${BOOK_TITLE} - ${BOOK_AUTHOR}.m4a"
+OUTPUT_NAME="${BOOK_TITLE} - ${BOOK_AUTHOR}.m4b"
 echo "OUTPUT: ${TMPDIR}/${OUTPUT_NAME}"
 
 # Extract cover art first
