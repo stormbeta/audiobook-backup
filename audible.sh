@@ -6,6 +6,9 @@ if [[ -e '/Volumes/dropbox' ]]; then
   OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks'
 elif [[ -e '/mnt/dropbox' ]]; then
   OUTPUT_DIR='/mnt/dropbox/Archive/Audiobooks'
+elif [[ -e "${HOME}/storage/downloads" ]]; then
+  # Termux-specific directory mapping
+  OUTPUT_DIR="${HOME}/storage/downloads"
 else
   OUTPUT_DIR='/tmp'
 fi
