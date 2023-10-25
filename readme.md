@@ -2,9 +2,16 @@
 
 ## Direct rip (requires key)
 
+Decrypts and preserves cover image, output extension is m4b
+
 Set the activation bytes and output dir in `audible.sh`
 
 `./audible.sh AAX_FILES`
+
+Requirements:
+
+* ffmpeg
+* AtomicParsley (for cover art)
 
 ## Downpour Helper
 
