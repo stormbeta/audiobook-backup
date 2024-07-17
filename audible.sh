@@ -61,9 +61,11 @@ ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy 
 
 echo "File size: $(du -sh "${TMPDIR}/output.m4a")" 1>&2
 
-if command -v AtomicParsley; then
+
+embed_cmd="$(command -v AtomicParsley || command -v atomicparsley)"
+if [[ -n "$embed_cmd" ]]; then
   artwork="${BOOK}.png"
-  AtomicParsley "${TMPDIR}/output.m4a" --title "$BOOK_TITLE" --artwork "$artwork"
+  $embed_cmd "${TMPDIR}/output.m4a" --title "$BOOK_TITLE" --artwork "$artwork"
   mv ${TMPDIR}/output-temp*.m4a "${TMPDIR}/output.m4a"
 else
   echo "AtomicParsley not found - cover art will be missing from output!" 1>&2
