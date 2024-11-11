@@ -10,7 +10,11 @@
 # * ffmpeg
 # * AtomicParsley (to preserve book cover)
 
-OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks/'
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks/'
+else
+  OUTPUT_DIR='/mnt/dropbox/Archive/Audiobooks/'
+fi
 
 ls -q ${1}*.m4b | sed -r "s/^(.*)/file '\1'/g" > input
 FILE1="$(ls -q ${1}*.m4b | head -n 1)"
@@ -26,20 +30,23 @@ echo "AUTHOR: ${AUTHOR}"
 
 # Bizarrely, ffmpeg cannot handle album art, so we have to add it back in ourselves
 # See: https://trac.ffmpeg.org/ticket/2798
-artwork="$(AtomicParsley $(ls -q ${1}*.m4b | head -n 1) --extractPix | grep -oP '(?<= )[^ ]*\.(jpg|png)$')"
+# 2024-11-11: While the above ticket claims this is resolved, it is not and still does not work on
+# modern ffmpeg versions
+artwork="$(AtomicParsley "$FILE1" --extractPixToPath /tmp/ | grep -oP '/tmp/.*$')"
+echo "ARTWORK: '${artwork}'" 1>&2
 
-ffmpeg -f concat -safe 0 -i input -vn -c copy output.m4a
+ffmpeg -f concat -safe 0 -i input -vn -c copy output.m4b
 
-AtomicParsley output.m4a \
+AtomicParsley output.m4b \
   --title "${NAME}" \
   --artist "${AUTHOR}" \
   --artwork "${artwork}" \
   --copyright "${PUBLISHER}" \
   --encodedBy "${ENC}"
 
-OUTPUT_NAME="${NAME} - ${AUTHOR}.m4a"
-rsync --progress -h output-temp*.m4a "${OUTPUT_DIR}/${OUTPUT_NAME}" && \
-  rm output-temp*.m4a
+OUTPUT_NAME="${NAME} - ${AUTHOR}.m4b"
+rsync --progress -h output-temp*.m4b "${OUTPUT_DIR}/${OUTPUT_NAME}" && \
+  rm output-temp*.m4b
 
 #if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
   #(
