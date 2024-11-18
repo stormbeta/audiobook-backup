@@ -1,21 +1,10 @@
 #!/usr/bin/env bash
 
-ACTIVATION_BYTES=''
-
-if [[ -e '/Volumes/dropbox' ]]; then
-  OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks'
-elif [[ -e '/mnt/dropbox' ]]; then
-  OUTPUT_DIR='/mnt/dropbox/Archive/Audiobooks'
-elif [[ -e "${HOME}/storage/downloads" ]]; then
-  # Termux-specific directory mapping
-  OUTPUT_DIR="${HOME}/storage/downloads"
-else
-  OUTPUT_DIR='/tmp'
-fi
-
 # Set proper error handling, log all output from stdout/stderr
 set -eo pipefail
 exec &> >(tee -a "/tmp/$(basename "$0").log")
+
+source config.sh
 
 if [[ -z "$ACTIVATION_BYTES" ]]; then
   echo "ACTIVATION_BYTES not set, cannot continue!" 1>&2

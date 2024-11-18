@@ -22,15 +22,7 @@ if [[ -f "$1" ]]; then
   exit 3
 fi
 
-# TODO: Extract output paths to a common file for all scripts
-if [[ -d /mnt/dropbox/Archive/Audiobooks ]]; then
-  readonly output="/mnt/dropbox/Archive/Audiobooks/Graphic Audio"
-elif [[ -d /Volumes/dropbox/Archive/Audiobooks ]]; then
-  readonly output="/Volumes/dropbox/Archive/Audiobooks/Graphic Audio"
-else
-  echo "dropbox mount not found on /mnt or /Volumes" 1>&2
-  exit 2
-fi
+source config.sh
 
 author="$1"
 shift 1
