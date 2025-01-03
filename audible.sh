@@ -45,11 +45,17 @@ echo "OUTPUT: ${TMPDIR}/${OUTPUT_NAME}"
 # Extract cover art first
 ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" "${BOOK}.png"
 
+# Offsets - used to strip useless intro/outro messages not part of actual book
+start_offset="2"
+end_offset="3"
+eof_timestamp="$(ffprobe -activation_bytes "$ACTIVATION_BYTES" -i "$BOOK" 2>&1 | grep Duration | awk '{print $2}' | sed 's/,//' | awk -F: '{print ($1*3600+$2*60+$3)-'$end_offset'}')"
+
+echo "EOF Seconds: $eof_timestamp" 1>&2
+
 # Actual conversion - no re-encode needed, copies audio as-is and preserves chapters
-ffmpeg -ss 2 -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" -vn -c:a copy "${TMPDIR}/output.m4a"
+ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "$BOOK" -ss "$start_offset" -to "$eof_timestamp" -vn -c:a copy "${TMPDIR}/output.m4a"
 
 echo "File size: $(du -sh "${TMPDIR}/output.m4a")" 1>&2
-
 
 embed_cmd="$(command -v AtomicParsley || command -v atomicparsley)"
 if [[ -n "$embed_cmd" ]]; then
@@ -60,23 +66,5 @@ else
   echo "AtomicParsley not found - cover art will be missing from output!" 1>&2
 fi
 
-echo "Copying to output directory" 1>&2
+echo "Copying to output directory: ${OUTPUT_DIR}/${OUTPUT_NAME}" 1>&2
 rsync --progress -h "${TMPDIR}/output.m4a" "${OUTPUT_DIR}/${OUTPUT_NAME}"
-
-if [[ "$OUTPUT_DIR" == "/tmp" ]]; then
-  echo "Uploading directly to dropbox as mount not found" 1>&2
-  if [[ "$(uname -s)" == "Darwin" ]] && command -v dropbox; then
-    (
-      cd "${OUTPUT_DIR}"
-      #uses https://github.com/andreafabrizi/Dropbox-Uploader
-      dropbox upload "${OUTPUT_NAME}" "Archive/Audiobooks/${OUTPUT_NAME}" &
-      DROPBOX_PID="$!"
-      echo "DROPBOX_PID: ${DROPBOX_PID}"
-      trap "kill ${DROPBOX_PID}; pkill -f curl.*dropbox" SIGINT SIGTERM
-      #NOTE: Mac only - ensures laptop won't sleep while uploading
-      caffeinate -w "${DROPBOX_PID}"
-    )
-  else
-    echo "Skipping direct dropbox upload as command not found or not on macOS" 1>&2
-  fi
-fi
