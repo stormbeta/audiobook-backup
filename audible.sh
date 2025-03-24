@@ -47,7 +47,7 @@ ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" "${BOOK}.png"
 
 # Offsets - used to strip useless intro/outro messages not part of actual book
 start_offset="2"
-end_offset="3"
+end_offset="4"
 eof_timestamp="$(ffprobe -activation_bytes "$ACTIVATION_BYTES" -i "$BOOK" 2>&1 | grep Duration | awk '{print $2}' | sed 's/,//' | awk -F: '{print ($1*3600+$2*60+$3)-'$end_offset'}')"
 
 echo "EOF Seconds: $eof_timestamp" 1>&2
