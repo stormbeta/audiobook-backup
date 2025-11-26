@@ -27,6 +27,8 @@ source config.sh
 author="$1"
 shift 1
 
+export output="$OUTPUT_DIR"
+
 for zipfile in $@; do
   if [[ ! -f "$zipfile" ]]; then
     echo "'$zipfile' not found! Aborting" 1>&2

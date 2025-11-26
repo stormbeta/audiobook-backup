@@ -43,7 +43,7 @@ OUTPUT_NAME="${BOOK_TITLE} - ${BOOK_AUTHOR}.m4b"
 echo "OUTPUT: ${TMPDIR}/${OUTPUT_NAME}"
 
 # Extract cover art first
-ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" "${BOOK}.png"
+ffmpeg -activation_bytes "${ACTIVATION_BYTES}" -i "${BOOK}" "${BOOK}.${COVER_FORMAT}"
 
 # Offsets - used to strip useless intro/outro messages not part of actual book
 start_offset="2"
@@ -59,7 +59,7 @@ echo "File size: $(du -sh "${TMPDIR}/output.m4a")" 1>&2
 
 embed_cmd="$(command -v AtomicParsley || command -v atomicparsley)"
 if [[ -n "$embed_cmd" ]]; then
-  artwork="${BOOK}.png"
+  artwork="${BOOK}.${COVER_FORMAT}"
   $embed_cmd "${TMPDIR}/output.m4a" --title "$BOOK_TITLE" --artwork "$artwork"
   mv ${TMPDIR}/output-temp*.m4a "${TMPDIR}/output.m4a"
 else

@@ -5,6 +5,9 @@
 
 export ACTIVATION_BYTES=''
 
+# NOTE: ListenAudiobookPlayer no longer works with PNG covers
+export COVER_FORMAT=jpg
+
 if [[ -e '/Volumes/dropbox' ]]; then
   export OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks'
 elif [[ -e '/mnt/dropbox' ]]; then

@@ -13,6 +13,7 @@ import glob
 # while the title field is set to some internal identifier
 
 # TODO: read zip from GA, fix title and filename automatically and dump to NAS
+# TODO: INCOMPLETE - delete?
 
 for filename in glob.iglob("/Volumes/dropbox/Archive/Audiobooks/Graphic Audio/*.m4b"):
   with open(filename, "rb+") as m4b:
