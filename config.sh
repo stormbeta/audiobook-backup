@@ -6,7 +6,10 @@
 export ACTIVATION_BYTES=''
 
 # NOTE: ListenAudiobookPlayer no longer works with PNG covers
+#       Audible covers are already JPG/MJPEG anyways
 export COVER_FORMAT=jpg
+export ART_ARCHIVE="$(dirname "${BASH_SOURCE[0]}")/artwork"
+mkdir -p "${ART_ARCHIVE}/artwork"
 
 if [[ -e '/Volumes/dropbox' ]]; then
   export OUTPUT_DIR='/Volumes/dropbox/Archive/Audiobooks'
