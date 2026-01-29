@@ -4,7 +4,8 @@ set -e
 
 source config.sh
 
-list="$(mktemp)"
+TMPDIR="$(mktemp -d)"
+list="${TMPDIR}/list.txt"
 for f in "$@"; do
     printf "file '%s'\n" "$f" >> "$list"
 done
@@ -20,8 +21,9 @@ echo -e "NAME: ${name}\nAUTHOR: ${author}" 1>&2
 # NOTE: Requires two separate steps
 #       ffmpeg's concat mode is REALLY stupid and wipes ALL
 #       metadata + chokes on anything that isn't pure audio
-concat="$(mktemp).m4b"
-output="$(mktemp).m4b"
+concat="${TMPDIR}/concat.m4b"
+output="${TMPDIR}/output.m4b"
+trap "rm -rf '${TMPDIR}'" SIGINT SIGTERM EXIT
 ffmpeg -hide_banner -loglevel error \
     -f concat -safe 0 -i "$list" \
     -vn -c copy \

@@ -1,26 +1,27 @@
-# Audiobook encoding for personal backups
+# Audiobook Backup/Archival Scripts
 
 Set output directory for all non-browser scripts in config.sh
 
-## Direct rip (requires key)
+## Audible
 
-Decrypts and preserves cover image, output extension is m4b
+Requirements: ffmpeg
 
-Set the activation bytes and output dir in `config.sh`
+Converts directly to plain m4b, preserving cover/metadata, does not reencode
+
+Set your activation code in `config.sh`
 
 `./audible.sh AAX_FILES`
 
-Requirements:
-
-* ffmpeg
-* AtomicParsley (for cover art)
-
 ## Downpour Helper
 
-Downpour makes things needlessly complicated by forcing you to download multiple files. `downpour.sh` is meant to help concatenate everything back into a single convenient file for archival.
+Requirements: ffmpeg
 
-Just move all the `m4b` files into the same directory, and run `./downpour.sh PREFIX`
+Downpour makes things needlessly complicated by forcing you to download multiple files. `downpour.sh` is meant to help concatenate everything back into a single file that's more convenient
+
+`./downpour.sh M4B_1 M4B_2 ...`
 
 ## Graphic Audiobook
+
+Extract and give a proper name to Graphic Audio downloads
 
 ./graphicaudio.sh "AUTHOR NAME" book_zips...
