@@ -1,3 +1,6 @@
+//TODO: No longer functional, website was redesigned
+// New design is much more tedious, not sure how to fix script
+
 // ==UserScript==
 // @name         Downpour Downloader
 // @namespace    http://tampermonkey.net/
