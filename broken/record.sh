@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# NOTE:
+# This script was never really used - it was put together as a last resort before I discovered better ways to archive audiobooks
+
 if [[ $# -le 1 ]]; then
   echo "Usage: $0 HH:MM:SS BOOK_NAME.opus [INPUT_SPEED]"
   exit 1
