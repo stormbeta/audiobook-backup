@@ -81,7 +81,7 @@ def get_duration_ms(path: Path) -> int:
 def encode_segment(src: Path, dest: Path):
     subprocess.run(
         ["ffmpeg", "-y", "-i", str(src), "-c:a", "aac", "-b:a", "256k", str(dest)],
-        check=True, capture_output=True,
+        check=True, capture_output=True, stdin=subprocess.DEVNULL,
     )
 
 
@@ -106,7 +106,7 @@ def write_ffmetadata(path: Path, chapters: list[tuple[str, int, int]], album: st
 
 
 def run(*args):
-    subprocess.run(args, check=True)
+    subprocess.run(args, check=True, stdin=subprocess.DEVNULL)
 
 
 def main():
@@ -181,7 +181,7 @@ def main():
     resources = db.execute(
         """
         SELECT ir.id, ir.number, ir.name AS chapter,
-               i.name AS item_name, i.id AS item_id, i.slug
+               i.name AS item_name, i.id AS item_id, i.slug, i.releaseAt
         FROM item_resources ir
         JOIN items i ON ir.itemId = i.id
         WHERE i.groupId = ?
@@ -192,7 +192,9 @@ def main():
     if not resources:
         sys.exit("No resources found in the database for this group.")
 
-    resources = sorted(resources, key=lambda r: (episode_num(r["slug"]), r["number"]))
+    # Sort by release date first, then slug episode number as tie-breaker (for
+    # series where multiple items share the same release timestamp), then chapter.
+    resources = sorted(resources, key=lambda r: (r["releaseAt"] or "", episode_num(r["slug"]), r["number"]))
 
     # ── Copy files with proper names ──────────────────────────────────────────
     print(f"Preparing {len(resources)} files...")
